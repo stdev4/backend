@@ -2,6 +2,7 @@ package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.config.BaseEntity;
 import com.example.stdev_hack.domain.Field;
+import com.example.stdev_hack.domain.badge.UserBadge;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,7 @@
-package com.example.stdev_hack.domain.user;
+package com.example.stdev_hack.domain.badge;
 
 import com.example.stdev_hack.config.BaseEntity;
-import com.example.stdev_hack.domain.badge.Badge;
+import com.example.stdev_hack.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
