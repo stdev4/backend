@@ -6,6 +6,8 @@ import com.example.stdev_hack.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 public class Quiz extends BaseEntity {
@@ -16,6 +18,9 @@ public class Quiz extends BaseEntity {
     @Column(name = "quiz_type", nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
     private QuizType type;
+
+    @Column(name = "release_date")
+    private LocalDate releaseDate;
 
     @Column(name = "field", nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
