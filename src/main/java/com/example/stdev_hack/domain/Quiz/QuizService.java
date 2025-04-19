@@ -57,11 +57,11 @@ public class QuizService {
     }
 
     public QuizResponse findDailyQuiz() {
-        Quiz quiz = quizRepository.findByReleaseDate(LocalDate.now());
-        if (quiz == null) {
-            throw new IllegalArgumentException("No quiz available");
+        List<Quiz> quizzes = quizRepository.findByReleaseDate(LocalDate.now());
+        if (quizzes.isEmpty()) {
+            throw new IllegalArgumentException("No quiz available for today");
         }
-        return new QuizResponse(quiz.getId(), quiz.getQuestion(), quiz.getField(), quiz.getCreatedAt());
+        return new QuizResponse(quizzes.get(0).getId(), quizzes.get(0).getQuestion(), quizzes.get(0).getField(), quizzes.get(0).getCreatedAt());
     }
 
     public List<QuizResponse> findInterestingRandomQuizzes(Long userId) {
