@@ -12,4 +12,12 @@ public class UserService {
     public User saveUser(NewUserReq req) {
         return userRepository.save(req.toEntity());
     }
+
+    public boolean isNicknameExist(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    public boolean isUsernameExist(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
 }
