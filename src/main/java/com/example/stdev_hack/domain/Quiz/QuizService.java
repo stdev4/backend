@@ -57,7 +57,7 @@ public class QuizService {
     }
 
     public QuizResponse findDailyQuiz() {
-        List<Quiz> quizzes = quizRepository.findByReleaseDate(LocalDate.now());
+        List<Quiz> quizzes = quizRepository.findAllDailyQuizzes();
         if (quizzes.isEmpty()) {
             throw new IllegalArgumentException("No quiz available for today");
         }

@@ -11,8 +11,8 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-    @Query("SELECT q FROM Quiz q WHERE q.releaseDate = :date")
-    List<Quiz> findByReleaseDate(@Param("date") LocalDate date);
+    @Query("SELECT q FROM Quiz q WHERE q.type = com.example.stdev_hack.domain.Quiz.QuizType.DAILY")
+    List<Quiz> findAllDailyQuizzes();
 
     @Query("""
     SELECT q
