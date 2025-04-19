@@ -2,6 +2,7 @@ package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.config.BaseEntity;
 import com.example.stdev_hack.domain.Field;
+import com.example.stdev_hack.domain.Quiz.Quiz;
 import com.example.stdev_hack.domain.badge.UserBadge;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,6 +43,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<UserBadge> badges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "creator")
+    private List<Quiz> generateQuizzes = new ArrayList<>();
 
     public User(String nickname, int age, String username, String password, Field interest) {
         this.nickname = nickname;

@@ -20,8 +20,4 @@ public class BaseEntity {
     @LastModifiedDate
     @Column
     private LocalDateTime updatedAt;
-
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
 }
