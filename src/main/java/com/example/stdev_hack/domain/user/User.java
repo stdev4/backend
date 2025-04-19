@@ -47,11 +47,18 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "creator")
     private List<Quiz> generateQuizzes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "solver", cascade = CascadeType.ALL)
+    private List<SolvedLog> solvedLogs = new ArrayList<>();
+
     public User(String nickname, int age, String username, String password, Field interest) {
         this.nickname = nickname;
         this.age = age;
         this.username = username;
         this.password = password;
         this.interest = interest;
+    }
+
+    public void addSolvedLog(SolvedLog log) {
+        this.solvedLogs.add(log);
     }
 }

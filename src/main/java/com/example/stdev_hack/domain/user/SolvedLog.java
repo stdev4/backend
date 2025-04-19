@@ -23,4 +23,10 @@ public class SolvedLog extends BaseEntity {
     private User solver;
 
     private boolean wasCorrect;
+
+    public SolvedLog(Quiz solvedQuiz, User solver, boolean wasCorrect) {
+        this.solvedQuiz = solvedQuiz;
+        this.solver = solver;
+        this.wasCorrect = wasCorrect;
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.stdev_hack.domain.Quiz;
 
 import com.example.stdev_hack.daos.CustomQuizReq;
+import com.example.stdev_hack.daos.QuizSolvingReq;
 import com.example.stdev_hack.domain.user.UserService;
 import com.example.stdev_hack.dtos.CommonResponse;
 import com.example.stdev_hack.dtos.CustomQuizResponse;
+import com.example.stdev_hack.dtos.QuizExplanationResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,17 @@ public class QuizController {
                         .status(200)
                         .message("Success")
                         .data(quizService.saveCustomQuiz(req))
+                        .build()
+        );
+    }
+
+    @PostMapping("/submit")
+    public ResponseEntity<CommonResponse<QuizExplanationResponse>> submitQuiz(@RequestBody QuizSolvingReq req) {
+        return ResponseEntity.ok(
+                CommonResponse.<QuizExplanationResponse>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(quizService.saveSolvedLog(req))
                         .build()
         );
     }

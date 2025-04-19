@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface SolvedLogRepository extends JpaRepository<SolvedLog, Long> {
     List<SolvedLog> findAllBySolverId(Long userId);
+    List<SolvedLog> findAllBySolvedQuizId(Long solvedQuizId);
 }
