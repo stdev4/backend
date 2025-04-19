@@ -32,6 +32,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
     private Set<Field> interests = new HashSet<>();
+
+    public User(String nickname, int age, String username, String password, Set<Field> interests) {
+        this.nickname = nickname;
+        this.age = age;
+        this.username = username;
+        this.password = password;
+        this.interests = interests;
+    }
 }
