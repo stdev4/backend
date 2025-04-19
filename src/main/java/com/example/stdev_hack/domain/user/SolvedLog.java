@@ -1,7 +1,7 @@
-package com.example.stdev_hack.domain.Quiz;
+package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.config.BaseEntity;
-import com.example.stdev_hack.domain.user.User;
+import com.example.stdev_hack.domain.Quiz.Quiz;
 import jakarta.persistence.*;
 import lombok.Getter;
 

@@ -2,6 +2,7 @@ package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.daos.UserReq;
 import com.example.stdev_hack.dtos.CustomQuizResponse;
+import com.example.stdev_hack.dtos.UserStatsResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final SolvedLogRepository solvedLogRepository;
 
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
@@ -58,5 +60,17 @@ public class UserService {
             user.setInterest(req.getInterest());
         }
         return user;
+    }
+
+    public UserStatsResponse getUserStats(Long userId) {
+        List<SolvedLog> solvedLogs = solvedLogRepository.findAllBySolverId(userId);
+
+        int correctCount = 0;
+        for (SolvedLog log : solvedLogs) {
+            if (log.isWasCorrect()) {
+                correctCount++;
+            }
+        }
+        return new UserStatsResponse(solvedLogs.size(), solvedLogs.isEmpty() ? 100 : ((int)((double) correctCount / (double) solvedLogs.size()) * 100));
     }
 }
