@@ -11,6 +11,7 @@ import com.example.stdev_hack.dtos.QuizExplanationResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,6 +49,13 @@ public class QuizService {
             throw new IllegalArgumentException("No quiz available");
         }
         return new QuizResponse(quiz.getId(), quiz.getQuestion(), quiz.getField(), quiz.getCreatedAt());
+    }
+
+    public List<QuizResponse> findInterestingRandomQuizzes(Long userId) {
+        List<Quiz> quizzes = quizRepository.findRandomUnsolvedQuizzesByUserInterest(userId, userService.findUserById(userId).getInterest());
+        return quizzes.stream()
+                .map(q -> new QuizResponse(q.getId(), q.getQuestion(), q.getField(), q.getCreatedAt()))
+                .toList().subList(0, 3);
     }
 
     @Transactional
