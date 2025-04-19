@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,11 @@ public class QuizService {
         User creator = userService.findUserById(req.getUserId());
         quiz.setQuestionCreator(creator);
         quizRepository.save(quiz);
-        return new CustomQuizResponse(creator.getId(), quiz.getQuestion(), quiz.isAnswer(), quiz.getExplanationBody(), quiz.getField());
+        return new CustomQuizResponse(creator.getId(), quiz.getQuestion(), quiz.isAnswer(), quiz.getExplanationBody(), quiz.getField(), quiz.getCreatedAt());
+    }
+
+    public List<Quiz> findAllQuizzesMadeByCurrentUser(Long userId) {
+
     }
 
     public QuizResponse findDailyQuiz() {
