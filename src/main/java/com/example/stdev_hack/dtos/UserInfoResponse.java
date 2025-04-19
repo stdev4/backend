@@ -5,8 +5,6 @@ import com.example.stdev_hack.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Set;
-
 @Getter
 @AllArgsConstructor
 public class UserInfoResponse {

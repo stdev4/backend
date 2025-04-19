@@ -3,6 +3,7 @@ package com.example.stdev_hack.domain.Quiz;
 import com.example.stdev_hack.daos.CustomQuizReq;
 import com.example.stdev_hack.domain.user.User;
 import com.example.stdev_hack.domain.user.UserService;
+import com.example.stdev_hack.dtos.CustomQuizResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,12 @@ public class QuizService {
     private final QuizRepository quizRepository;
 
     @Transactional
-    public Quiz saveCustomQuiz(CustomQuizReq req) {
+    public CustomQuizResponse saveCustomQuiz(CustomQuizReq req) {
         Quiz quiz = new Quiz(QuizType.CUSTOM, req.getField(), req.getQuestion(), req.isAnswer(), req.getExplanationBody());
         User creator = userService.findUserById(req.getUserId());
         quiz.setQuestionCreator(creator);
-        return quizRepository.save(quiz);
+        quizRepository.save(quiz);
+        return new CustomQuizResponse(creator.getId(), quiz.getQuestion(), quiz.isAnswer(), quiz.getExplanationBody(), quiz.getField());
     }
 
     public QuizResponse findDailyQuiz() {

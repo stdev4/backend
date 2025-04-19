@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class CustomQuizReq {
     private Long userId;
-    private String question;
-    private boolean answer;
-    private String explanationBody;
     private Field field;
+    private String question;
+    private String explanationBody;
+    private boolean answer;
 }
