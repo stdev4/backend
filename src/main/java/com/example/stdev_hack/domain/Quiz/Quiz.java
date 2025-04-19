@@ -4,13 +4,17 @@ import com.example.stdev_hack.config.BaseEntity;
 import com.example.stdev_hack.domain.Field;
 import com.example.stdev_hack.domain.user.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@Table(name = "quiz")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Quiz extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
