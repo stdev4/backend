@@ -5,6 +5,8 @@ import com.example.stdev_hack.domain.Field;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "user")
@@ -35,6 +37,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Setter
     private Field interest;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<UserBadge> badges;
 
     public User(String nickname, int age, String username, String password, Field interest) {
         this.nickname = nickname;
