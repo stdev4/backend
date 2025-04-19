@@ -21,4 +21,6 @@ public class SolvedLog extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User solver;
+
+    private boolean wasCorrect;
 }
