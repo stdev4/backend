@@ -1,6 +1,6 @@
 # 멀티 스테이지 빌드를 통해 최종 이미지 크기 최적화
 # 빌드 스테이지
-FROM openjdk:17-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
 # Gradle 래퍼와 빌드 파일 복사
@@ -19,7 +19,7 @@ COPY src src
 RUN ./gradlew build -x test
 
 # 실행 스테이지
-FROM openjdk:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # 빌드 스테이지에서 생성된 JAR 파일 복사
