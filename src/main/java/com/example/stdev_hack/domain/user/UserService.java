@@ -1,12 +1,15 @@
 package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.daos.UserReq;
+import com.example.stdev_hack.domain.badge.UserBadge;
 import com.example.stdev_hack.dtos.CustomQuizResponse;
+import com.example.stdev_hack.dtos.UserBadgeResponse;
 import com.example.stdev_hack.dtos.UserStatsResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,5 +75,16 @@ public class UserService {
             }
         }
         return new UserStatsResponse(solvedLogs.size(), solvedLogs.isEmpty() ? 100 : ((int)((double) correctCount / (double) solvedLogs.size()) * 100));
+    }
+
+    public List<UserBadgeResponse> findAllUserBadges(Long userId) {
+        List<UserBadge> userBadges = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("User not found")
+        ).getBadges();
+        List<UserBadgeResponse> responses = new ArrayList<>();
+        for (UserBadge userBadge : userBadges) {
+            responses.add(new UserBadgeResponse(userBadge.getBadge().getName(), userBadge.getCreatedAt()));
+        }
+        return responses;
     }
 }

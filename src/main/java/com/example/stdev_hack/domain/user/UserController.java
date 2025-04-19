@@ -1,10 +1,7 @@
 package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.daos.UserReq;
-import com.example.stdev_hack.dtos.CommonResponse;
-import com.example.stdev_hack.dtos.CustomQuizResponse;
-import com.example.stdev_hack.dtos.UserInfoResponse;
-import com.example.stdev_hack.dtos.UserStatsResponse;
+import com.example.stdev_hack.dtos.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +78,17 @@ public class UserController {
                         .status(200)
                         .message("Success")
                         .data(userService.getUserStats(userId))
+                        .build()
+        );
+    }
+
+    @GetMapping("/{userId}/badge")
+    public ResponseEntity<CommonResponse<List<UserBadgeResponse>>> getUserBadges(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                CommonResponse.<List<UserBadgeResponse>>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(userService.findAllUserBadges(userId))
                         .build()
         );
     }
