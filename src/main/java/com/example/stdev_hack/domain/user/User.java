@@ -6,6 +6,7 @@ import com.example.stdev_hack.domain.badge.UserBadge;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,7 +41,7 @@ public class User extends BaseEntity {
     private Field interest;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<UserBadge> badges;
+    private List<UserBadge> badges = new ArrayList<>();
 
     public User(String nickname, int age, String username, String password, Field interest) {
         this.nickname = nickname;
