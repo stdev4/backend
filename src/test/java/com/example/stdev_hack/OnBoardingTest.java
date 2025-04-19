@@ -23,8 +23,8 @@ public class OnBoardingTest {
 
     @Test
     void 회원_정보_저장_및_조회() {
-        UserDto dto = new UserDto("닉네임", 10, "test123", "password123", List.of("physics", "others"));
-        User user = userService.saveUser(userDto);
+        NewUserReq req = new NewUserReq("닉네임", 10, "test123", "password123", List.of("physics", "others"));
+        User user = userService.saveUser(req);
         assertThat(user).isInstanceOf(User.class);
         assertThat(user.getNickname()).isEqualTo("nickname");
         assertThat(user.getAge()).isEqualTo(10);
@@ -36,8 +36,8 @@ public class OnBoardingTest {
 
     @Test
     void 아이디_중복_검사() {
-        UserDto dto = new UserDto("nickname2", 10, "test2", "password123", List.of("physics", "others"));
-        User user = userService.saveUser(userDto);
+        NewUserReq req = new NewUserReq("nickname2", 10, "test2", "password123", List.of("physics", "others"));
+        User user = userService.saveUser(req);
         assertThat(userService.checkNicknameUniqueness("test2")).isFalse();
         assertThat(userService.checkNicknameUniqueness("test")).isTrue();
         assertThat(userService.checkNicknameUniqueness("uniqueNickname")).isTrue();
@@ -45,8 +45,8 @@ public class OnBoardingTest {
 
     @Test
     void 닉네임_중복_검사() {
-        UserDto dto = new UserDto("nickname3", 10, "test3", "password123", List.of("physics", "others"));
-        User user = userService.saveUser(userDto);
+        NewUserReq req = new NewUserReq("nickname3", 10, "test3", "password123", List.of("physics", "others"));
+        User user = userService.saveUser(req);
         assertThat(userService.checkUsernameUniqueness("test3")).isFalse();
         assertThat(userService.checkUsernameUniqueness("test")).isTrue();
         assertThat(userService.checkUsernameUniqueness("uniqueUsername")).isTrue();
