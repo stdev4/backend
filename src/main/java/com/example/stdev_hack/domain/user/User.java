@@ -1,6 +1,7 @@
 package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.config.BaseEntity;
+import com.example.stdev_hack.domain.Field;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

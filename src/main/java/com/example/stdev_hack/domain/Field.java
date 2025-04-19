@@ -1,4 +1,4 @@
-package com.example.stdev_hack.domain.user;
+package com.example.stdev_hack.domain;
 
 public enum Field {
     PHYSICS,
