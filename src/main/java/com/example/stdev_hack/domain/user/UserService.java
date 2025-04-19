@@ -1,9 +1,12 @@
 package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.daos.UserReq;
+import com.example.stdev_hack.dtos.CustomQuizResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,13 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("User not found")
         );
+    }
+
+    public List<CustomQuizResponse> findAllQuizzesMadeByCurrentUser(Long userId) {
+        User user = findUserById(userId);
+        return user.getGenerateQuizzes().stream()
+                .map(q -> new CustomQuizResponse(userId, q.getQuestion(), q.isAnswer(), q.getExplanationBody(), q.getField(), q.getCreatedAt()))
+                .toList();
     }
 
     @Transactional

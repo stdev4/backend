@@ -1,12 +1,15 @@
 package com.example.stdev_hack.domain.Quiz;
 
 import com.example.stdev_hack.daos.CustomQuizReq;
+import com.example.stdev_hack.domain.user.UserService;
 import com.example.stdev_hack.dtos.CommonResponse;
 import com.example.stdev_hack.dtos.CustomQuizResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/quiz")

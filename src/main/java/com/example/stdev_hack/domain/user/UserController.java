@@ -2,10 +2,13 @@ package com.example.stdev_hack.domain.user;
 
 import com.example.stdev_hack.daos.UserReq;
 import com.example.stdev_hack.dtos.CommonResponse;
+import com.example.stdev_hack.dtos.CustomQuizResponse;
 import com.example.stdev_hack.dtos.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -55,6 +58,17 @@ public class UserController {
                         .status(200)
                         .message("Success")
                         .data("회원 정보 수정이 완료되었습니다.")
+                        .build()
+        );
+    }
+
+    @GetMapping("/{userId}/custom")
+    public ResponseEntity<CommonResponse<List<CustomQuizResponse>>> getUsersCustomQuizzes(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                CommonResponse.<List<CustomQuizResponse>>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(userService.findAllQuizzesMadeByCurrentUser(userId))
                         .build()
         );
     }

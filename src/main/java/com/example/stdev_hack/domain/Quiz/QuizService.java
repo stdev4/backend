@@ -27,10 +27,6 @@ public class QuizService {
         return new CustomQuizResponse(creator.getId(), quiz.getQuestion(), quiz.isAnswer(), quiz.getExplanationBody(), quiz.getField(), quiz.getCreatedAt());
     }
 
-    public List<Quiz> findAllQuizzesMadeByCurrentUser(Long userId) {
-
-    }
-
     public QuizResponse findDailyQuiz() {
         Quiz quiz = quizRepository.findByReleaseDate(LocalDate.now());
         if (quiz == null) {
