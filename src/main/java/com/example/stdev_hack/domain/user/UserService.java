@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    private User findUserById(Long id) {
+    public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("User not found")
         );
