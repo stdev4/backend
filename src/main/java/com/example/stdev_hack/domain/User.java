@@ -4,6 +4,9 @@ import com.example.stdev_hack.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Table(name = "user")
@@ -23,4 +26,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany
+    private Set<Field> interests = new HashSet<>();
 }
