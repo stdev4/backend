@@ -1,15 +1,17 @@
-name: Build, Push to ECR and Deploy to EC2
+name: Spring App CI/CD Pipeline
 on:
   push:
     branches:
       - test/test-ecr
-
   # 수동 실행 옵션
   workflow_dispatch:
 
 jobs:
-  build-push-deploy:
+  build:
+    name: Build Application
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ github.sha }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -32,6 +34,19 @@ jobs:
           spring.jpa.properties.hibernate.format_sql=true
           EOL
           echo "✅ application.properties file created successfully!"
+
+      - name: Build status
+        run: echo "✅ Build step completed successfully!"
+
+  push-to-ecr:
+    name: Push to Amazon ECR
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      ecr_image_url: ${{ steps.build-image.outputs.image }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -64,14 +79,13 @@ jobs:
             exit 1
           fi
 
-      - name: Verify ECR repository
+      - name: Verify or Create ECR repository
         run: |
           echo "Verifying ECR repository: ${{ secrets.ECR_REPOSITORY }}"
           if aws ecr describe-repositories --repository-names ${{ secrets.ECR_REPOSITORY }} &> /dev/null; then
             echo "✅ ECR repository exists!"
           else
-            echo "❌ ECR repository does not exist!"
-            echo "Creating repository: ${{ secrets.ECR_REPOSITORY }}"
+            echo "❌ ECR repository does not exist! Creating..."
             aws ecr create-repository --repository-name ${{ secrets.ECR_REPOSITORY }}
             echo "✅ ECR repository created successfully!"
           fi
@@ -81,7 +95,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
         run: |
           echo "Using ECR Registry: $ECR_REGISTRY"
           echo "Using repository: $ECR_REPOSITORY"
@@ -101,18 +115,33 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
         run: |
           echo "✅ ECR Push completed successfully!"
           echo "Image URL: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "Latest Image URL: $ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
-      # EC2 배포 단계 시작
+  deploy-to-ec2:
+    name: Deploy to EC2
+    needs: push-to-ecr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
       - name: Deploy to EC2
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           DB_HOST: ${{ secrets.DB_HOST }}
@@ -192,11 +221,19 @@ jobs:
           
           echo "✅ EC2 deployment completed successfully!"
 
-      - name: Deployment Status Notification
-        if: always()
+  notify:
+    name: Notification
+    needs: [build, push-to-ecr, deploy-to-ec2]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Workflow Status
         run: |
-          if [ "${{ job.status }}" == "success" ]; then
-            echo "✅ Entire workflow completed successfully!"
+          if [ "${{ needs.build.result }}" == "success" ] && [ "${{ needs.push-to-ecr.result }}" == "success" ] && [ "${{ needs.deploy-to-ec2.result }}" == "success" ]; then
+            echo "✅ CI/CD 파이프라인이 성공적으로 완료되었습니다!"
           else
-            echo "❌ Workflow failed at some point. Check logs for details."
+            echo "❌ CI/CD 파이프라인에서 오류가 발생했습니다."
+            echo "- Build 단계: ${{ needs.build.result }}"
+            echo "- ECR Push 단계: ${{ needs.push-to-ecr.result }}"
+            echo "- EC2 Deploy 단계: ${{ needs.deploy-to-ec2.result }}"
           fi
