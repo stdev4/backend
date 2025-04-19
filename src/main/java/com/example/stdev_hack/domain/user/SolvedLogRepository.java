@@ -11,6 +11,6 @@ public interface SolvedLogRepository extends JpaRepository<SolvedLog, Long> {
     List<SolvedLog> findAllBySolverId(Long userId);
     List<SolvedLog> findAllBySolvedQuizId(Long solvedQuizId);
 
-    @Query("select sl from SolvedLog sl where sl.solver.id = :userId and sl.wasCorrect = :false")
+    @Query("select sl from SolvedLog sl where sl.solver.id = :userId and sl.wasCorrect = false")
     List<SolvedLog> findWrongLogs(Long userId);
 }

@@ -58,6 +58,13 @@ public class QuizService {
                 .toList().subList(0, 3);
     }
 
+    public List<QuizResponse> findEntireRandomQuizzes(Long userId) {
+        List<Quiz> quizzes = quizRepository.findRandomUnsolvedQuizzes(userId);
+        return quizzes.stream()
+                .map(q -> new QuizResponse(q.getId(), q.getQuestion(), q.getField(), q.getCreatedAt()))
+                .toList().subList(0, 3);
+    }
+
     @Transactional
     public QuizExplanationResponse saveSolvedLog(QuizSolvingReq req) {
         User user = userService.findUserById(req.getUserId());

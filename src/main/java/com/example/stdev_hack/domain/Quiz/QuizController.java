@@ -41,6 +41,17 @@ public class QuizController {
         );
     }
 
+    @GetMapping("/random")
+    public ResponseEntity<CommonResponse<List<QuizResponse>>> getRandomQuizzes(@RequestParam Long userId) {
+        return ResponseEntity.ok(
+                CommonResponse.<List<QuizResponse>>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(quizService.findEntireRandomQuizzes(userId))
+                        .build()
+        );
+    }
+
     @PostMapping("/custom/new")
     public ResponseEntity<CommonResponse<CustomQuizResponse>> createCustomQuiz(@RequestBody CustomQuizReq req) {
         return ResponseEntity.ok(

@@ -29,4 +29,17 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
             @Param("userId") Long userId,
             @Param("interest") Field interest
     );
+
+    @Query("""
+    SELECT q
+    FROM Quiz q
+    WHERE q.type = com.example.stdev_hack.domain.Quiz.QuizType.RANDOM
+      AND q.id NOT IN (
+          SELECT sl.solvedQuiz.id
+          FROM SolvedLog sl
+          WHERE sl.solver.id = :userId
+      )
+    ORDER BY function('RAND')
+    """)
+    List<Quiz> findRandomUnsolvedQuizzes(@Param("userId") Long userId);
 }
