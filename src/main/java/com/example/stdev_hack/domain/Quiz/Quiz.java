@@ -39,4 +39,17 @@ public class Quiz extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
+
+    public Quiz(QuizType type, Field field, String question, boolean answer, String explanationBody) {
+        this.type = type;
+        this.field = field;
+        this.question = question;
+        this.answer = answer;
+        this.explanationBody = explanationBody;
+    }
+
+    public void setQuestionCreator(User creator) {
+        this.creator = creator;
+        this.creator.getGenerateQuizzes().add(this);
+    }
 }
