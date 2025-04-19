@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewUserReq {
+public class UserReq {
     private String nickname;
     private int age;
     private String username;

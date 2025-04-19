@@ -1,6 +1,6 @@
 package com.example.stdev_hack.domain.user;
 
-import com.example.stdev_hack.daos.NewUserReq;
+import com.example.stdev_hack.daos.UserReq;
 import com.example.stdev_hack.dtos.CommonResponse;
 import com.example.stdev_hack.dtos.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +36,25 @@ public class UserController {
     }
 
     @PostMapping("/onboarding/save")
-    public ResponseEntity<CommonResponse<UserInfoResponse>> join(@RequestBody NewUserReq req) {
+    public ResponseEntity<CommonResponse<UserInfoResponse>> join(@RequestBody UserReq req) {
         User user = userService.saveUser(req);
         return ResponseEntity.ok(
                 CommonResponse.<UserInfoResponse>builder()
                         .status(200)
                         .message("Success")
                         .data(UserInfoResponse.of(user))
+                        .build()
+        );
+    }
+
+    @PutMapping("/{userId}/update")
+    public ResponseEntity<CommonResponse<String>> updateUserInfo(@PathVariable Long userId, @RequestBody UserReq req) {
+        User user = userService.updateUser(userId, req);
+        return ResponseEntity.ok(
+                CommonResponse.<String>builder()
+                        .status(200)
+                        .message("Success")
+                        .data("회원 정보 수정이 완료되었습니다.")
                         .build()
         );
     }
