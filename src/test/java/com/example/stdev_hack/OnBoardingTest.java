@@ -31,7 +31,7 @@ public class OnBoardingTest {
         assertThat(user.getUsername()).isEqualTo("test123");
         assertThat(user.getPassword()).isEqualTo("password123");
         assertThat(user.getInterests()).hasSize(2);
-        assertThat(user.getInterests()).extracting("name").containsExactlyInAnyOrder("physics", "others");
+        assertThat(user.getInterests()).extracting("name").containsExactlyInAnyOrder("PHYSICS", "OTHERS");
     }
 
     @Test
