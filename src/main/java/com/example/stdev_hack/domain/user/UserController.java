@@ -20,7 +20,18 @@ public class UserController {
                 CommonResponse.<Boolean>builder()
                         .status(200)
                         .message("Success")
-                        .data(userService.isNicknameExist(nickname))
+                        .data(!userService.isNicknameExist(nickname))
+                        .build()
+        );
+    }
+
+    @GetMapping("/onboarding/username/{username}/exists")
+    public ResponseEntity<CommonResponse<Boolean>> checkUsernameExistence(@PathVariable String username) {
+        return ResponseEntity.ok(
+                CommonResponse.<Boolean>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(!userService.isUsernameExist(username))
                         .build()
         );
     }
