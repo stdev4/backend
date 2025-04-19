@@ -1,4 +1,4 @@
-name: Build and Push to ECR
+name: Build, Push to ECR and Deploy to EC2
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -58,6 +58,7 @@ jobs:
           fi
 
       - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
@@ -75,6 +76,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           
           echo "✅ Image successfully pushed to ECR!"
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Print image details
         env:
@@ -82,6 +84,75 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          echo "✅ Deployment completed successfully!"
+          echo "✅ ECR Push completed successfully!"
           echo "Image URL: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "Latest Image URL: $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      # EC2 배포 단계 시작
+      - name: Deploy to EC2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        run: |
+          echo "🚀 Starting deployment to EC2 instance..."
+          
+          # 배포 스크립트 생성
+          cat > deploy.sh << 'EOL'
+          #!/bin/bash
+          
+          # 환경 변수 설정
+          ECR_REGISTRY="${1}"
+          ECR_REPOSITORY="${2}"
+          IMAGE_TAG="${3}"
+          
+          echo "🔄 Logging in to ECR..."
+          aws ecr get-login-password --region $(aws configure get region) | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+          
+          echo "🔄 Pulling the latest image..."
+          docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          
+          echo "🔄 Stopping and removing existing container if exists..."
+          docker stop spring-app 2>/dev/null || true
+          docker rm spring-app 2>/dev/null || true
+          
+          echo "🔄 Starting new container..."
+          docker run -d \
+            --name spring-app \
+            -p 8080:8080 \
+            --restart always \
+            ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          
+          echo "✅ Deployment completed successfully!"
+          
+          # 실행 중인 컨테이너 목록 출력
+          echo "🔍 Running containers:"
+          docker ps
+          EOL
+          
+          # 배포 스크립트에 실행 권한 부여
+          chmod +x deploy.sh
+          
+          # SSH key 파일 생성
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2-key.pem
+          chmod 600 ec2-key.pem
+          
+          # 스크립트를 EC2 인스턴스로 복사 후 실행
+          scp -i ec2-key.pem -o StrictHostKeyChecking=no deploy.sh ${EC2_USERNAME}@${EC2_HOST}:/tmp/deploy.sh
+          ssh -i ec2-key.pem -o StrictHostKeyChecking=no ${EC2_USERNAME}@${EC2_HOST} "chmod +x /tmp/deploy.sh && /tmp/deploy.sh ${ECR_REGISTRY} ${ECR_REPOSITORY} ${IMAGE_TAG}"
+          
+          # 임시 파일 정리
+          rm -f ec2-key.pem deploy.sh
+          
+          echo "✅ EC2 deployment completed successfully!"
+
+      - name: Deployment Status Notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Entire workflow completed successfully!"
+          else
+            echo "❌ Workflow failed at some point. Check logs for details."
+          fi
