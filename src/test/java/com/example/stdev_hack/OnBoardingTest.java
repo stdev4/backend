@@ -1,5 +1,7 @@
 package com.example.stdev_hack;
 
+import com.example.stdev_hack.daos.NewUserReq;
+import com.example.stdev_hack.domain.user.Field;
 import com.example.stdev_hack.domain.user.User;
 import com.example.stdev_hack.domain.user.UserService;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ public class OnBoardingTest {
 
     @Test
     void 회원_정보_저장_및_조회() {
-        NewUserReq req = new NewUserReq("닉네임", 10, "test123", "password123", List.of("physics", "others"));
+        NewUserReq req = new NewUserReq("닉네임", 10, "test123", "password123", List.of(Field.PHYSICS, Field.OTHERS));
         User user = userService.saveUser(req);
         assertThat(user).isInstanceOf(User.class);
         assertThat(user.getNickname()).isEqualTo("nickname");
@@ -36,8 +38,8 @@ public class OnBoardingTest {
 
     @Test
     void 아이디_중복_검사() {
-        NewUserReq req = new NewUserReq("nickname2", 10, "test2", "password123", List.of("physics", "others"));
-        User user = userService.saveUser(req);
+        NewUserReq req = new NewUserReq("nickname2", 10, "test2", "password123", List.of(Field.PHYSICS, Field.OTHERS));
+        userService.saveUser(req);
         assertThat(userService.checkNicknameUniqueness("test2")).isFalse();
         assertThat(userService.checkNicknameUniqueness("test")).isTrue();
         assertThat(userService.checkNicknameUniqueness("uniqueNickname")).isTrue();
@@ -45,8 +47,8 @@ public class OnBoardingTest {
 
     @Test
     void 닉네임_중복_검사() {
-        NewUserReq req = new NewUserReq("nickname3", 10, "test3", "password123", List.of("physics", "others"));
-        User user = userService.saveUser(req);
+        NewUserReq req = new NewUserReq("nickname3", 10, "test3", "password123", List.of(Field.PHYSICS, Field.OTHERS));
+        userService.saveUser(req);
         assertThat(userService.checkUsernameUniqueness("test3")).isFalse();
         assertThat(userService.checkUsernameUniqueness("test")).isTrue();
         assertThat(userService.checkUsernameUniqueness("uniqueUsername")).isTrue();
