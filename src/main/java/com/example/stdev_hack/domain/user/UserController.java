@@ -92,4 +92,15 @@ public class UserController {
                         .build()
         );
     }
+
+    @GetMapping("/{userId}/review")
+    public ResponseEntity<CommonResponse<List<QuizReviewResponse>>> getUserReviewQuizzes(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                CommonResponse.<List<QuizReviewResponse>>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(userService.findWrongQuizzes(userId))
+                        .build()
+        );
+    }
 }

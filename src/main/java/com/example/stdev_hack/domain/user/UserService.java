@@ -3,6 +3,7 @@ package com.example.stdev_hack.domain.user;
 import com.example.stdev_hack.daos.UserReq;
 import com.example.stdev_hack.domain.badge.UserBadge;
 import com.example.stdev_hack.dtos.CustomQuizResponse;
+import com.example.stdev_hack.dtos.QuizReviewResponse;
 import com.example.stdev_hack.dtos.UserBadgeResponse;
 import com.example.stdev_hack.dtos.UserStatsResponse;
 import jakarta.transaction.Transactional;
@@ -84,6 +85,17 @@ public class UserService {
         List<UserBadgeResponse> responses = new ArrayList<>();
         for (UserBadge userBadge : userBadges) {
             responses.add(new UserBadgeResponse(userBadge.getBadge().getName(), userBadge.getCreatedAt()));
+        }
+        return responses;
+    }
+
+    public List<QuizReviewResponse> findWrongQuizzes(Long userId) {
+        List<SolvedLog> wrongLogs = solvedLogRepository.findWrongLogs(userId);
+        List<QuizReviewResponse> responses = new ArrayList<>();
+        for (SolvedLog log : wrongLogs) {
+            responses.add(new QuizReviewResponse(log.getSolvedQuiz().getId(), log.getSolvedQuiz().getQuestion(), log.getSolvedQuiz().isAnswer(),
+                    log.getSolvedQuiz().getExplanationBody(), log.getSolvedQuiz().getField(), log.getCreatedAt()
+            ));
         }
         return responses;
     }
