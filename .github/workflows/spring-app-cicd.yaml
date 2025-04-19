@@ -2,7 +2,7 @@ name: Spring App CI/CD Pipeline
 on:
   push:
     branches:
-      - test/test-ecr
+      - main
   # 수동 실행 옵션
   workflow_dispatch:
 
