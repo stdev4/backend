@@ -35,12 +35,27 @@ public class QuizService {
     }
 
     @Transactional
-    public CustomQuizResponse saveCustomQuiz(CustomQuizReq req) {
+    public Long saveCustomQuiz(CustomQuizReq req) {
         Quiz quiz = new Quiz(QuizType.CUSTOM, req.getField(), req.getQuestion(), req.isAnswer(), req.getExplanationBody());
         User creator = userService.findUserById(req.getUserId());
         quiz.setQuestionCreator(creator);
-        quizRepository.save(quiz);
-        return new CustomQuizResponse(creator.getId(), quiz.getQuestion(), quiz.isAnswer(), quiz.getExplanationBody(), quiz.getField(), quiz.getCreatedAt());
+        return quizRepository.save(quiz).getId();
+    }
+
+    @Transactional
+    public Long updateCustomQuiz(Long quizId, CustomQuizReq req) {
+        Quiz quiz = findQuizById(quizId);
+        if (req.getField() != null) {
+            quiz.setField(req.getField());
+        }
+        if (!req.getQuestion().isEmpty()) {
+            quiz.setQuestion(req.getQuestion());
+        }
+        if (!req.getExplanationBody().isEmpty()) {
+            quiz.setExplanationBody(req.getExplanationBody());
+        }
+        quiz.setAnswer(req.isAnswer());
+        return quizId;
     }
 
     public QuizResponse findDailyQuiz() {

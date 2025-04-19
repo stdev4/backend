@@ -5,6 +5,7 @@ import com.example.stdev_hack.domain.Field;
 import com.example.stdev_hack.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -24,18 +25,22 @@ public class Quiz extends BaseEntity {
 
     @Column(name = "field", nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
+    @Setter
     private Field field;
 
     @Column(name = "question", nullable = false)
+    @Setter
     private String question;
 
     @Column(name = "answer", nullable = false)
+    @Setter
     private boolean answer;
 
     @Column(name = "explanation_title")
     private String explanationTitle;
 
     @Column(name = "explanation_body", nullable = false, columnDefinition = "text")
+    @Setter
     private String explanationBody;
 
     @Column(name = "explanation_source")

@@ -53,12 +53,23 @@ public class QuizController {
     }
 
     @PostMapping("/custom/new")
-    public ResponseEntity<CommonResponse<CustomQuizResponse>> createCustomQuiz(@RequestBody CustomQuizReq req) {
+    public ResponseEntity<CommonResponse<Long>> createCustomQuiz(@RequestBody CustomQuizReq req) {
         return ResponseEntity.ok(
-                CommonResponse.<CustomQuizResponse>builder()
+                CommonResponse.<Long>builder()
                         .status(200)
                         .message("Success")
                         .data(quizService.saveCustomQuiz(req))
+                        .build()
+        );
+    }
+
+    @PutMapping("/custom/update")
+    public ResponseEntity<CommonResponse<Long>> createCustomQuiz(@RequestParam Long quizId, @RequestBody CustomQuizReq req) {
+        return ResponseEntity.ok(
+                CommonResponse.<Long>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(quizService.updateCustomQuiz(quizId, req))
                         .build()
         );
     }
