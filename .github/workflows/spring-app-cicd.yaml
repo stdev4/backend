@@ -151,6 +151,19 @@ jobs:
         run: |
           echo "🚀 Starting deployment to EC2 instance..."
           
+          # 이미지 존재 여부 확인
+          echo "Verifying image exists in ECR: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          if ! aws ecr describe-images --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG &> /dev/null; then
+            echo "⚠️ Warning: Image with tag $IMAGE_TAG not found in ECR. Falling back to 'latest' tag."
+            IMAGE_TAG="latest"
+            # latest 태그도 없는지 확인
+            if ! aws ecr describe-images --repository-name $ECR_REPOSITORY --image-ids imageTag=latest &> /dev/null; then
+              echo "❌ Error: Even 'latest' tag not found in ECR! Deployment cannot proceed."
+              exit 1
+            fi
+          fi
+          echo "Using image tag: $IMAGE_TAG"
+          
           # 배포 스크립트 생성
           cat > deploy.sh << 'EOL'
           #!/bin/bash
@@ -178,11 +191,28 @@ jobs:
               echo "✅ AWS CLI already installed."
           fi
           
+          # AWS 리전 설정 확인
+          AWS_REGION=$(aws configure get region)
+          echo "Using AWS Region: $AWS_REGION"
+          
           echo "🔄 Logging in to ECR..."
-          aws ecr get-login-password --region $(aws configure get region) | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+          
+          # 이미지 정보 확인
+          echo "Checking for image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          aws ecr describe-images --repository-name ${ECR_REPOSITORY} --image-ids imageTag=${IMAGE_TAG} || echo "⚠️ Warning: Image info not found in ECR"
           
           echo "🔄 Pulling the latest image..."
-          docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          if ! docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}; then
+              echo "❌ Failed to pull image. Trying 'latest' tag as fallback..."
+              if ! docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest; then
+                  echo "❌ Failed to pull even with 'latest' tag. Aborting deployment."
+                  exit 1
+              else
+                  echo "✅ Successfully pulled 'latest' image instead."
+                  IMAGE_TAG="latest"
+              fi
+          fi
           
           echo "🔄 Stopping and removing existing container if exists..."
           docker stop spring-app 2>/dev/null || true
@@ -197,6 +227,15 @@ jobs:
             -e SPRING_DATASOURCE_USERNAME="${DB_USERNAME}" \
             -e SPRING_DATASOURCE_PASSWORD="${DB_PASSWORD}" \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          
+          # 컨테이너 실행 확인
+          if docker ps | grep -q spring-app; then
+              echo "✅ Container running successfully!"
+          else
+              echo "❌ Container failed to start! Checking docker logs:"
+              docker logs spring-app 2>&1 || echo "No logs available"
+              exit 1
+          fi
           
           echo "✅ Deployment completed successfully!"
           
