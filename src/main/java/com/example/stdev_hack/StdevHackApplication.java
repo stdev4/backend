@@ -19,7 +19,14 @@ public class StdevHackApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("https://q-scien.vercel.app/", "https://stdev4.o-r.kr/", "http://localhost:5173/");
+						.allowedOrigins(
+								"https://q-scien.vercel.app",
+								"https://stdev4.o-r.kr",
+								"http://localhost:5173"
+						)
+						.allowedMethods("*")
+						.allowedHeaders("*")
+						.allowCredentials(true);
 			}
 		};
 	}

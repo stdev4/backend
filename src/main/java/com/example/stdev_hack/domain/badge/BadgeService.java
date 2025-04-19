@@ -6,8 +6,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class BadgeService {
@@ -27,9 +25,5 @@ public class BadgeService {
         Badge badge = findBadgeByName(badgeName);
         UserBadge userBadge = new UserBadge(user, badge);
         return userBadgeRepository.save(userBadge);
-    }
-
-    public List<UserBadge> findAllUserBadges(Long userId) {
-        return userBadgeRepository.findAllByOwnerId(userId);
     }
 }

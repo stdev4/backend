@@ -6,12 +6,10 @@ import com.example.stdev_hack.domain.user.SolvedLog;
 import com.example.stdev_hack.domain.user.SolvedLogRepository;
 import com.example.stdev_hack.domain.user.User;
 import com.example.stdev_hack.domain.user.UserService;
-import com.example.stdev_hack.dtos.CustomQuizResponse;
 import com.example.stdev_hack.dtos.QuizExplanationResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

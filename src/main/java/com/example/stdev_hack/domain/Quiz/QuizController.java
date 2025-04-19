@@ -2,9 +2,7 @@ package com.example.stdev_hack.domain.Quiz;
 
 import com.example.stdev_hack.daos.CustomQuizReq;
 import com.example.stdev_hack.daos.QuizSolvingReq;
-import com.example.stdev_hack.domain.user.UserService;
 import com.example.stdev_hack.dtos.CommonResponse;
-import com.example.stdev_hack.dtos.CustomQuizResponse;
 import com.example.stdev_hack.dtos.QuizExplanationResponse;
 import com.example.stdev_hack.dtos.QuizResponse;
 import lombok.RequiredArgsConstructor;
