@@ -1,6 +1,8 @@
 package com.example.stdev_hack.domain.user;
 
+import com.example.stdev_hack.daos.NewUserReq;
 import com.example.stdev_hack.dtos.CommonResponse;
+import com.example.stdev_hack.dtos.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,18 @@ public class UserController {
                         .status(200)
                         .message("Success")
                         .data(!userService.isUsernameExist(username))
+                        .build()
+        );
+    }
+
+    @PostMapping("/onboarding/save")
+    public ResponseEntity<CommonResponse<UserInfoResponse>> join(@RequestBody NewUserReq req) {
+        User user = userService.saveUser(req);
+        return ResponseEntity.ok(
+                CommonResponse.<UserInfoResponse>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(UserInfoResponse.of(user))
                         .build()
         );
     }

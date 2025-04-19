@@ -12,9 +12,9 @@ import java.util.Set;
 public class UserInfoResponse {
     private Long userId;
     private String nickname;
-    private Set<Field> interests;
+    private Field interest;
 
     public static UserInfoResponse of(User user) {
-        return new UserInfoResponse(user.getId(), user.getNickname(), user.getInterests());
+        return new UserInfoResponse(user.getId(), user.getNickname(), user.getInterest());
     }
 }

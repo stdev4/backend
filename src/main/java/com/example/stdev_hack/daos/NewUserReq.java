@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +14,9 @@ public class NewUserReq {
     private int age;
     private String username;
     private String password;
-    private List<Field> interests;
+    private Field interest;
 
     public User toEntity() {
-        return new User(nickname, age, username, password, new HashSet<>(this.interests));
+        return new User(nickname, age, username, password, interest);
     }
 }

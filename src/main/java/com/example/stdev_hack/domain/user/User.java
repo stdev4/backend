@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Getter
 @Table(name = "user")
@@ -33,15 +30,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(columnDefinition = "varchar(255)")
+    @Column(nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
-    private Set<Field> interests = new HashSet<>();
+    private Field interest;
 
-    public User(String nickname, int age, String username, String password, Set<Field> interests) {
+    public User(String nickname, int age, String username, String password, Field interest) {
         this.nickname = nickname;
         this.age = age;
         this.username = username;
         this.password = password;
-        this.interests = interests;
+        this.interest = interest;
     }
 }
