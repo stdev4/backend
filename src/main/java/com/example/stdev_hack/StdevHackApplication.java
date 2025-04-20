@@ -20,7 +20,7 @@ public class StdevHackApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 						.allowedOrigins(
-								"https://q-scien.vercel.app",
+								"https://q-sign.vercel.app",
 								"https://stdev4.o-r.kr",
 								"http://localhost:5173"
 						)
