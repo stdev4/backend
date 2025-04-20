@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-    @Query("SELECT q FROM Quiz q WHERE q.type = com.example.stdev_hack.domain.Quiz.QuizType.DAILY")
+    @Query("SELECT q FROM Quiz q ORDER BY function('RAND')")
     List<Quiz> findAllDailyQuizzes();
 
     @Query("""
