@@ -10,8 +10,20 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-    @Query("SELECT q FROM Quiz q ORDER BY function('RAND')")
+    @Query("SELECT q FROM Quiz q WHERE q.type = com.example.stdev_hack.domain.Quiz.QuizType.DAILY")
     List<Quiz> findAllDailyQuizzes();
+
+    @Query("""
+    SELECT q
+    FROM Quiz q
+    WHERE q.id NOT IN (
+          SELECT sl.solvedQuiz.id
+          FROM SolvedLog sl
+          WHERE sl.solver.id = :userId
+      )
+    ORDER BY function('RAND')
+    """)
+    List<Quiz> findRandomUnsolvedQuiz(@Param("userId") Long userId);
 
     @Query("""
     SELECT q

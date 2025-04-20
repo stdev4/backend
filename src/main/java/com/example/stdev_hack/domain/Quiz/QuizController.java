@@ -18,12 +18,12 @@ public class QuizController {
     private final QuizService quizService;
 
     @GetMapping("/daily")
-    public ResponseEntity<CommonResponse<QuizResponse>> getDailyQuiz() {
+    public ResponseEntity<CommonResponse<QuizResponse>> getDailyQuiz(@RequestParam Long userId) {
         return ResponseEntity.ok(
                 CommonResponse.<QuizResponse>builder()
                         .status(200)
                         .message("Success")
-                        .data(quizService.findDailyQuiz())
+                        .data(quizService.findDailyQuiz(userId))
                         .build()
         );
     }

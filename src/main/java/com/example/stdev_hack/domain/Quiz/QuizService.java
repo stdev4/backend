@@ -55,11 +55,8 @@ public class QuizService {
         return quizId;
     }
 
-    public QuizResponse findDailyQuiz() {
-        List<Quiz> quizzes = quizRepository.findAllDailyQuizzes();
-        if (quizzes.isEmpty()) {
-            throw new IllegalArgumentException("No quiz available for today");
-        }
+    public QuizResponse findDailyQuiz(Long userId) {
+        List<Quiz> quizzes = quizRepository.findRandomUnsolvedQuiz(userId);
         return new QuizResponse(quizzes.get(0).getId(), quizzes.get(0).getQuestion(), quizzes.get(0).getField(), quizzes.get(0).getCreatedAt());
     }
 
